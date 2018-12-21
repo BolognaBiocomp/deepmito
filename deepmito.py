@@ -21,9 +21,6 @@ def main():
   parser.add_argument("-o", "--outf",
                       help = "The output tabular file",
                       dest = "outf", required = True)
-  parser.add_argument("-c", "--cacheRebuild",
-                      help = "Force rebuilding of the cache", 
-                      dest = "cacheRebuild", action="store_true")
   ns = parser.parse_args()
 
 
