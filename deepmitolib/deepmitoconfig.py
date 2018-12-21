@@ -1,6 +1,6 @@
 import os
 
-DEEPMITOROOT=os.environ["DEEPMITOROOT"]
+DEEPMITOROOT="/home/biodocker/deepmito"
 
 MODELS=[os.path.join(DEEPMITOROOT, "models", "model.0.h5"),
         os.path.join(DEEPMITOROOT, "models", "model.1.h5"),
