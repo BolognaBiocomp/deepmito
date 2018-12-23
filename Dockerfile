@@ -1,26 +1,27 @@
 # Base Image
-FROM biocontainers/biocontainers:latest
+FROM python:2.7.15-slim-stretch
 
 # Metadata
-LABEL base.image="biocontainers:latest"
-LABEL version="0.9"
-LABEL software="DeepMito"
-LABEL software.version="2018012"
-LABEL description="an open source software tool to predict protein sub-mitochondrial localization"
-LABEL website="http://busca.biocomp.unibo.it/deepmito/"
-LABEL documentation="http://busca.biocomp.unibo.it/deepmito/"
-LABEL license="http://busca.biocomp.unibo.it/deepmito/"
-LABEL tags="Proteomics"
+LABEL base.image="biocontainers:latest" \
+ version="0.9" \
+ software="DeepMito" \
+ software.version="2018012" \
+ description="An open source software tool to predict protein sub-mitochondrial localization." \
+ website="http://busca.biocomp.unibo.it/deepmito/" \
+ documentation="http://busca.biocomp.unibo.it/deepmito/" \
+ license="http://busca.biocomp.unibo.it/deepmito/" \
+ tags="Proteomics" \
+ maintainer="Castrense Savojardo <castrense.savojardo2@unibo.it>" 
+ 
+RUN useradd -m biodocker
 
-# Maintainer
-MAINTAINER Castrense Savojard <castrense.savojardo2@unibo.it>
+COPY . /home/biodocker/
+
+RUN pip install -r /home/biodocker/requirements.txt
 
 USER biodocker
 
-COPY ./deepmito.zip /home/biodocker/
-COPY ./requirements.txt /home/biodocker/
-RUN cd /home/biodocker/ && unzip deepmito.zip && cp deepmito/deepmito.py /home/biodocker/bin/  && pip install -r requirements.txt
-ENV PATH /home/biodocker/bin:$PATH
+ENV PATH /home/biodocker:$PATH
 
 WORKDIR /data/
-ENTRYPOINT ["python", "/home/biodocker/bin/deepmito.py"]
+ENTRYPOINT ["python", "/home/biodocker/deepmito.py"]
