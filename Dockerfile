@@ -19,6 +19,7 @@ COPY . /home/biodocker/
 
 RUN pip install -r /home/biodocker/requirements.txt
 
+
 USER biodocker
 
 ENV PATH /home/biodocker:$PATH
