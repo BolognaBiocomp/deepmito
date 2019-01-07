@@ -21,4 +21,7 @@ RUN pip install -r /home/biodocker/deepmito/requirements.txt
 
 WORKDIR /data/
 
+# Verbosity level of Tensorflow
+ENV TF_CPP_MIN_LOG_LEVEL 3
+
 ENTRYPOINT ["python", "/home/biodocker/deepmito/deepmito.py"]
