@@ -1,5 +1,6 @@
 import sys
-sys.path.append("/home/biodocker/deepmito")
+import os
+sys.path.append(os.environ['DEEPMITOROOT'])
 import argparse
 import numpy
 from Bio import SeqIO
