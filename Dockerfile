@@ -1,31 +1,33 @@
 # Base Image
-FROM biocontainers/biocontainers:latest
+FROM python:2.7.15-slim-stretch
 
 # Metadata
-LABEL base.image="biocontainers:latest"
+LABEL base.image="python:2.7.15-slim-stretch"
 LABEL version="0.9"
 LABEL software="DeepMito"
 LABEL software.version="2018012"
 LABEL description="an open source software tool to predict protein sub-mitochondrial localization"
 LABEL website="http://busca.biocomp.unibo.it/deepmito/"
 LABEL documentation="http://busca.biocomp.unibo.it/deepmito/"
-LABEL license="http://busca.biocomp.unibo.it/deepmito/"
+LABEL license="GNU GENERAL PUBLIC LICENSE Version 3"
 LABEL tags="Proteomics"
 LABEL maintainer="Castrense Savojardo <castrense.savojardo2@unibo.it>"
 
-COPY requirements.txt /home/biodocker/deepmito/
+WORKDIR /usr/src/deepmito
 
-USER root
+COPY requirements.txt ./
 
-RUN apt update && apt install -y "ncbi-blast+" && pip install --no-cache-dir -r /home/biodocker/deepmito/requirements.txt
+RUN apt-get update && apt install -y "ncbi-blast+" && \
+    pip install --no-cache-dir -r requirements.txt && \
+    useradd -m deepmito
 
-USER biodocker
+USER deepmito
 
-COPY . /home/biodocker/deepmito/
+COPY . .
 
 WORKDIR /data/
 
 # Verbosity level of Tensorflow
-ENV TF_CPP_MIN_LOG_LEVEL 3
+ENV TF_CPP_MIN_LOG_LEVEL=3 DEEPMITOROOT=/usr/src/deepmito
 
-ENTRYPOINT ["python", "/home/biodocker/deepmito/deepmito.py"]
+ENTRYPOINT ["python", "/usr/src/deepmito/deepmito.py"]
