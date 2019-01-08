@@ -15,7 +15,11 @@ LABEL maintainer="Castrense Savojardo <castrense.savojardo2@unibo.it>"
 
 COPY requirements.txt /home/biodocker/deepmito/
 
-RUN pip install --no-cache-dir -r /home/biodocker/deepmito/requirements.txt
+USER root
+
+RUN apt update && apt install -y "ncbi-blast+" && pip install --no-cache-dir -r /home/biodocker/deepmito/requirements.txt
+
+USER biodocker
 
 COPY . /home/biodocker/deepmito/
 

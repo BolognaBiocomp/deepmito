@@ -8,6 +8,7 @@ import deepmitolib.deepmitoconfig as cfg
 from deepmitolib.cnn import MultiCNNWrapper
 from deepmitolib.utils import encode, annotToText
 from deepmitolib.workenv import TemporaryEnv
+from deepmitolib.blast import runPsiBlast
 
 def main():
   DESC = "DeepMito: Predictor of protein submitochondrial localization"
@@ -15,15 +16,14 @@ def main():
   parser.add_argument("-f", "--fasta",
                       help = "The input FASTA file name",
                       dest = "fasta", required = True)
-  parser.add_argument("-p", "--pssm",
-                      help = "The PSIBLAST PSSM checkpoint file",
-                      dest = "pssm", required= True)
+  parser.add_argument("-d", "--dbfile",
+                      help = "The PSIBLAST DB file",
+                      dest = "dbfile", required= True)
+
   parser.add_argument("-o", "--outf",
                       help = "The output tabular file",
                       dest = "outf", required = True)
   ns = parser.parse_args()
-
-
 
   workEnv = TemporaryEnv()
 
@@ -34,7 +34,8 @@ def main():
     sequence.id = sequence.id.replace("|","_")
     fastaSeq  = workEnv.createFile(sequence.id+".", ".fasta")
     SeqIO.write([sequence], fastaSeq, 'fasta')
-    acc, X = encode(fastaSeq, cfg.AAIDX10, ns.pssm)
+    pssmFile, _ = runPsiBlast(sequence.id, ns.dbfile, fastaSeq, workEnv)
+    acc, X = encode(fastaSeq, cfg.AAIDX10, pssmFile)
     pred   = multiModel.predict(X)
     cc = cfg.GOMAP[numpy.argmax(pred)]
     score = round(numpy.max(pred),2)
