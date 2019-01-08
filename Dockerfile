@@ -11,7 +11,7 @@ LABEL website="http://busca.biocomp.unibo.it/deepmito/"
 LABEL documentation="http://busca.biocomp.unibo.it/deepmito/"
 LABEL license="http://busca.biocomp.unibo.it/deepmito/"
 LABEL tags="Proteomics"
-LABEL maintainer="Castrense Savojard <castrense.savojardo2@unibo.it>"
+LABEL maintainer="Castrense Savojardo <castrense.savojardo2@unibo.it>"
 
 USER biodocker
 
