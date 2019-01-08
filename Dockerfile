@@ -13,11 +13,11 @@ LABEL license="http://busca.biocomp.unibo.it/deepmito/"
 LABEL tags="Proteomics"
 LABEL maintainer="Castrense Savojardo <castrense.savojardo2@unibo.it>"
 
-USER biodocker
+COPY requirements.txt /home/biodocker/deepmito/
+
+RUN pip install --no-cache-dir -r /home/biodocker/deepmito/requirements.txt
 
 COPY . /home/biodocker/deepmito/
-
-RUN pip install -r /home/biodocker/deepmito/requirements.txt
 
 WORKDIR /data/
 
