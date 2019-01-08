@@ -20,3 +20,7 @@ def runPsiBlast(acc, dbfile, fastaFile, workEnv):
                    stdout=open(psiblastStdOut, 'w'),
                    stderr=open(psiblastStdErr, 'w'))
   return psiblastOutPssm, psiblastOutAln
+
+def makeblastdb(dbfile):
+  printDate("Preparing sequence database")
+  subprocess.call(['makeblastdb', '-in', dbfile, '-dbtype', 'prot'])
