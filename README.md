@@ -4,7 +4,7 @@
 
 #### Usage of the image
 
-#### The first step to run DeepMito Docker container is the pull the container image. To do so, run:
+The first step to run DeepMito Docker container is the pull the container image. To do so, run:
 
 ```
 $ docker pull bolognabiocomp/deepmito
