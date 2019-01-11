@@ -2,6 +2,8 @@
 
 ### The DeepMito Docker Image
 
+Image availbale on DockerHub [https://hub.docker.com/r/bolognabiocomp/deepmito](https://hub.docker.com/r/bolognabiocomp/deepmito)
+
 #### Usage of the image
 
 The first step to run DeepMito Docker container is the pull the container image. To do so, run:
