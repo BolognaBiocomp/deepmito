@@ -69,9 +69,24 @@ def readfasta(fastafile):
   record = next(SeqIO.parse(fastafile, "fasta"))
   return record.id, str(record.seq)
 
+def seq_to_pssm(sequence):
+  aaOrder = "ARNDCQEGHILKMFPSTWYV"
+  X = []
+  for aa in sequence:
+    x = [0.0]*len(aaOrder)
+    try:
+      x[aaOrder.index(aa)]=1.0
+    except:
+      pass
+    X.append(x)
+  return numpy.array(X)
+
 def encode(fasta, properties, blastpssm):
   acc, sequence = readfasta(fasta)
-  pssm = BlastCheckPointPSSM(blastpssm)
+  try:
+    pssm = BlastCheckPointPSSM(blastpssm)
+  except:
+    pssm = seq_to_pssm(sequence)
   assert(len(sequence)==len(pssm))
   propencoding = []
   for aa in sequence:
