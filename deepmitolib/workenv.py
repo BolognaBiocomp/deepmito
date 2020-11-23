@@ -11,21 +11,22 @@ import os
 
 class TemporaryEnv():
   def __init__(self):
-    tempfile.tempdir = os.path.abspath(tempfile.mkdtemp(prefix="job.tmpd.", dir="."))
-  
+    self.tempdir = os.path.abspath(tempfile.mkdtemp(prefix="job.tmpd.", dir="."))
+
   def destroy(self):
-    if not tempfile.tempdir == None:
-      shutil.rmtree(tempfile.tempdir)
-      
+    if not self.tempdir == None:
+      shutil.rmtree(self.tempdir)
+
   def createFile(self, prefix, suffix):
-    outTmpFile = tempfile.NamedTemporaryFile(mode   = 'write',
+    outTmpFile = tempfile.NamedTemporaryFile(mode   = 'w',
                                              prefix = prefix,
                                              suffix = suffix,
-                                             delete = False)
+                                             delete = False,
+                                             dir = self.tempdir)
     outTmpFileName = outTmpFile.name
     outTmpFile.close()
     return outTmpFileName
-  
+
   def createDir(self, prefix):
-    outTmpDir = tempfile.mkdtemp(prefix=prefix)
+    outTmpDir = tempfile.mkdtemp(prefix=prefix, dir=self.tempdir)
     return outTmpDir

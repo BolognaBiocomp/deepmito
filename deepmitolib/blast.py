@@ -1,6 +1,6 @@
 import subprocess
-import deepmitoconfig as dmcfg
-from utils import printDate
+from . import deepmitoconfig as dmcfg
+from . import utils
 
 def runPsiBlast(acc, dbfile, fastaFile, workEnv):
   psiblastStdOut   = workEnv.createFile(acc+".psiblast_stdout.", ".log")
@@ -10,7 +10,7 @@ def runPsiBlast(acc, dbfile, fastaFile, workEnv):
   psial2HSSPStdErr = workEnv.createFile(acc+".psial_stderr.", ".log")
 
   sequence = "".join([x.strip() for x in open(fastaFile).readlines()[1:]])
-  printDate("%s: Running PsiBlast" % acc)
+  utils.printDate("%s: Running PsiBlast" % acc)
   subprocess.call(['psiblast', '-query', fastaFile,
                    '-db', dbfile,
                    '-out', psiblastOutAln,
@@ -22,5 +22,5 @@ def runPsiBlast(acc, dbfile, fastaFile, workEnv):
   return psiblastOutPssm, psiblastOutAln
 
 def makeblastdb(dbfile):
-  printDate("Preparing sequence database")
+  utils.printDate("Preparing sequence database")
   subprocess.call(['makeblastdb', '-in', dbfile, '-dbtype', 'prot'])

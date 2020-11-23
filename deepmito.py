@@ -31,21 +31,25 @@ def main():
 
   multiModel = MultiCNNWrapper(cfg.MODELS)
   annotation = {}
+  try:
+      for sequence in SeqIO.parse(ns.fasta, 'fasta'):
+        sequence.id = sequence.id.replace("|","_")
+        fastaSeq  = workEnv.createFile(sequence.id+".", ".fasta")
+        SeqIO.write([sequence], fastaSeq, 'fasta')
+        pssmFile, _ = runPsiBlast(sequence.id, ns.dbfile, fastaSeq, workEnv)
+        acc, X = encode(fastaSeq, cfg.AAIDX10, pssmFile)
+        pred   = multiModel.predict(X)
+        cc = cfg.GOMAP[numpy.argmax(pred)]
+        score = round(numpy.max(pred),2)
+        annotation[sequence.id] = {'sequence': {'len': len(str(sequence.seq)), 'sequence': str(sequence.seq)},
+                                   'goa': [cc], 'features': [], 'score': score, 'second': '-', 'alt_score': 0.0}
 
-  for sequence in SeqIO.parse(ns.fasta, 'fasta'):
-    sequence.id = sequence.id.replace("|","_")
-    fastaSeq  = workEnv.createFile(sequence.id+".", ".fasta")
-    SeqIO.write([sequence], fastaSeq, 'fasta')
-    pssmFile, _ = runPsiBlast(sequence.id, ns.dbfile, fastaSeq, workEnv)
-    acc, X = encode(fastaSeq, cfg.AAIDX10, pssmFile)
-    pred   = multiModel.predict(X)
-    cc = cfg.GOMAP[numpy.argmax(pred)]
-    score = round(numpy.max(pred),2)
-    annotation[sequence.id] = {'sequence': {'len': len(str(sequence.seq)), 'sequence': str(sequence.seq)}, 
-                               'goa': [cc], 'features': [], 'score': score, 'second': '-', 'alt_score': 0.0}
-  
-  annotToText(annotation, ns.outf)
-  workEnv.destroy()
+      annotToText(annotation, ns.outf)
+  except:
+      raise
+  else:
+      workEnv.destroy()
+  sys.exit(0)
 
 if __name__ == "__main__":
-  main()  
+  main()

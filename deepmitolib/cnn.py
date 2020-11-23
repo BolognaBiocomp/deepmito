@@ -2,16 +2,16 @@ from keras.models import load_model
 import numpy
 
 class CNN(object):
-  
+
   def __init__(self, filepath):
-    self.model = load_model(filepath)
+    self.model = load_model(filepath, compile=False)
 
   def summary(self):
     self.model.summary()
 
   def predict(self, X):
     return self.model.predict(X)
-    
+
 
 class MultiCNNWrapper():
   def __init__(self, filenames):
