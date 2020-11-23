@@ -2,16 +2,16 @@ import os
 
 DEEPMITOROOT=os.environ['DEEPMITOROOT']
 
-MODELS=[os.path.join(DEEPMITOROOT, "models", "model.0.h5"),
-        os.path.join(DEEPMITOROOT, "models", "model.1.h5"),
-        os.path.join(DEEPMITOROOT, "models", "model.2.h5"),
-        os.path.join(DEEPMITOROOT, "models", "model.3.h5"),
-        os.path.join(DEEPMITOROOT, "models", "model.4.h5"),
-        os.path.join(DEEPMITOROOT, "models", "model.5.h5"),
-        os.path.join(DEEPMITOROOT, "models", "model.6.h5"),
-        os.path.join(DEEPMITOROOT, "models", "model.7.h5"),
-        os.path.join(DEEPMITOROOT, "models", "model.8.h5"),
-        os.path.join(DEEPMITOROOT, "models", "model.9.h5")]
+MODELS=[os.path.join(DEEPMITOROOT, "models", "model.0.no-opt.h5"),
+        os.path.join(DEEPMITOROOT, "models", "model.1.no-opt.h5"),
+        os.path.join(DEEPMITOROOT, "models", "model.2.no-opt.h5"),
+        os.path.join(DEEPMITOROOT, "models", "model.3.no-opt.h5"),
+        os.path.join(DEEPMITOROOT, "models", "model.4.no-opt.h5"),
+        os.path.join(DEEPMITOROOT, "models", "model.5.no-opt.h5"),
+        os.path.join(DEEPMITOROOT, "models", "model.6.no-opt.h5"),
+        os.path.join(DEEPMITOROOT, "models", "model.7.no-opt.h5"),
+        os.path.join(DEEPMITOROOT, "models", "model.8.no-opt.h5"),
+        os.path.join(DEEPMITOROOT, "models", "model.9.no-opt.h5")]
 
 
 AAIDX10 = {'A': [0.00,0.07,0.18,0.38,0.21,0.28,0.50,0.48,0.63,0.47],
