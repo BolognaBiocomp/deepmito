@@ -13,7 +13,7 @@ def annotToText(annotation, outfile):
   ofs.close()
 
 def printDate(msg):
-  print "[%s] %s" % (strftime("%a, %d %b %Y %H:%M:%S", localtime()), msg)
+  print ("[%s] %s" % (strftime("%a, %d %b %Y %H:%M:%S", localtime()), msg))
 
 def _check(line):
     import re
@@ -33,7 +33,7 @@ def BlastCheckPointPSSM(checkpointFile, newFormat = True, transform = True):
     try:
         checkpointFile = open(checkpointFile).readlines()
     except IOError:
-        print "Error while open/reading checkpoint file."
+        print("Error while open/reading checkpoint file.")
         raise
     pssm = None
     if newFormat:
@@ -94,13 +94,3 @@ def encode(fasta, properties, blastpssm):
   mtx = numpy.concatenate((numpy.array(pssm), numpy.array(propencoding)), axis=1)
   mtx = mtx.reshape((1, mtx.shape[0], mtx.shape[1]))
   return acc, mtx
-
-
-
-
-
-
-
-
-
-
