@@ -3,7 +3,7 @@ from Bio import SeqIO
 
 from time import localtime, strftime
 
-import deepmitoconfig as dmcfg
+from . import deepmitoconfig as dmcfg
 import copy
 
 def annotToText(annotation, outfile):
