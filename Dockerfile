@@ -30,6 +30,6 @@ RUN conda update -n base conda && \
    && find /opt/conda/ -follow -type f -name '*.js.map' -delete
 
 # Verbosity level of Tensorflow
-ENV TF_CPP_MIN_LOG_LEVEL=3 DEEPMITOROOT=/usr/src/deepmito PATH=/usr/src/deepmito:$PATH
+ENV TF_CPP_MIN_LOG_LEVEL=3 DEEPMITO_ROOT=/usr/src/deepmito PATH=/usr/src/deepmito:$PATH
 
 ENTRYPOINT ["/usr/src/deepmito/deepmito.py"]

@@ -1,5 +1,6 @@
 import numpy
 from Bio import SeqIO
+import logging
 
 from time import localtime, strftime
 
@@ -94,3 +95,18 @@ def encode(fasta, properties, blastpssm):
   mtx = numpy.concatenate((numpy.array(pssm), numpy.array(propencoding)), axis=1)
   mtx = mtx.reshape((1, mtx.shape[0], mtx.shape[1]))
   return acc, mtx
+
+def check_sequence_pssm_match(sequence, psiblast_pssm):
+    try:
+        pssm_mat = BlastCheckPointPSSM(psiblast_pssm)
+    except:
+        logging.error("Failed reading/parsing PSSM file")
+        raise
+    else:
+        try:
+            assert(len(sequence) == pssm_mat.shape[0])
+        except:
+            logging.error("Sequence and PSSM have different lengths")
+            raise
+
+    return True
