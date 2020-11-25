@@ -17,7 +17,7 @@ Now the DeepMito Docker image is installed in your local Docker environment and 
 To show DeepMito help page run:
 
 ```
-$ docker run bolognabiocomp/deepmito deepmito.py -h
+$ docker run bolognabiocomp/deepmito -h
 
 Using TensorFlow backend.
 usage: deepmito.py [-h] -f FASTA -d DBFILE -o OUTF
@@ -56,7 +56,7 @@ $ gunzip uniprot_sprot.fasta.gz
 Now, we are ready to predict the sub-mitochondrial localization of our input protein. Run:
 
 ```
-$ docker run -v $(pwd):/data/ bolognabiocomp/deepmito deepmito.py -f Q9NX14.fasta -d uniprot_sprot.fasta -o Q9NX14.out
+$ docker run -v $(pwd):/data/ bolognabiocomp/deepmito -f Q9NX14.fasta -d uniprot_sprot.fasta -o Q9NX14.out
 ```
 
 In the above command, an important role is played by the option -v $(pwd):/data/. This option is used to make available *inside* the container files that are stored *outside* the container (i.e. in your local machine). In the example above, we are mapping the current program working directory to the /data/ folder inside the container. This will let the deepmito.py program inside the container to see the input protein file Q9NX14.fasta and the database file uniprot_sprot.fasta.
