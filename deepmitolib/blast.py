@@ -2,6 +2,12 @@ import subprocess
 from . import deepmitoconfig as dmcfg
 from . import utils
 
+def check_db_index(dbfile):
+  for ext in ['phr', 'pin', 'psq']:
+      if not os.path.isfile(dbfile + ".%s" % ext):
+          return False
+  return True
+
 def runPsiBlast(acc, dbfile, fastaFile, workEnv):
   psiblastStdOut   = workEnv.createFile(acc+".psiblast_stdout.", ".log")
   psiblastStdErr   = workEnv.createFile(acc+".psiblast_stderr.", ".log")
@@ -10,6 +16,8 @@ def runPsiBlast(acc, dbfile, fastaFile, workEnv):
   psial2HSSPStdErr = workEnv.createFile(acc+".psial_stderr.", ".log")
 
   sequence = "".join([x.strip() for x in open(fastaFile).readlines()[1:]])
+  if not check_db_index(dbfile):
+      makeblastdb(dbfile)
   utils.printDate("%s: Running PsiBlast" % acc)
   subprocess.call(['psiblast', '-query', fastaFile,
                    '-db', dbfile,

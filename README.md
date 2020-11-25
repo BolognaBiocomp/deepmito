@@ -53,19 +53,13 @@ $ wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase
 $ gunzip uniprot_sprot.fasta.gz
 ```
 
-Before running DeepMito, we need to prepare the database for the search. To do so, run the following:
-
-```
-$ docker run -v $(pwd):/data/ bolognabiocomp/deepmito prepareDB.py -f uniprot_sprot.fasta
-```
-This is equivalent to a makeblastdb on the sequence database. In the above command, an important role is played by the option -v $(pwd):/data/. This option is used to make available *inside* the container files that are stored *outside* the container (i.e. in your local machine). In the example above, we are mapping the current program working directory to the /data/ folder inside the container. This will let the prepareDB.py program inside the container to see the external database file uniprot_sprot.fasta.
-
-
 Now, we are ready to predict the sub-mitochondrial localization of our input protein. Run:
 
 ```
 $ docker run -v $(pwd):/data/ bolognabiocomp/deepmito deepmito.py -f Q9NX14.fasta -d uniprot_sprot.fasta -o Q9NX14.out
 ```
+
+In the above command, an important role is played by the option -v $(pwd):/data/. This option is used to make available *inside* the container files that are stored *outside* the container (i.e. in your local machine). In the example above, we are mapping the current program working directory to the /data/ folder inside the container. This will let the deepmito.py program inside the container to see the input protein file Q9NX14.fasta and the database file uniprot_sprot.fasta.
 
 The file Q9NX14.out now contains the DeepMito prediction:
 
