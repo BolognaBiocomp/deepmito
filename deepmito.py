@@ -58,7 +58,6 @@ def run_pssm(ns):
         record.id = record.id.replace("|","_")
         fastaSeq  = workEnv.createFile(record.id+".", ".fasta")
         SeqIO.write([record], fastaSeq, 'fasta')
-        pssmFile, _ = runPsiBlast(record.id, ns.dbfile, fastaSeq, workEnv)
         acc, X = encode(fastaSeq, cfg.AAIDX10, pssmFile)
         pred   = multiModel.predict(X)
         cc = cfg.GOMAP[numpy.argmax(pred)]

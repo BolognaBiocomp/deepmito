@@ -64,7 +64,7 @@ def _pssmParseNew(checkpoint, transform):
             else:
                 pos[j] = float(line[j])
         pssm.append(pos)
-    return pssm
+    return numpy.array(pssm)
 
 def readfasta(fastafile):
   record = next(SeqIO.parse(fastafile, "fasta"))
@@ -92,7 +92,7 @@ def encode(fasta, properties, blastpssm):
   propencoding = []
   for aa in sequence:
     propencoding.append(properties.get(aa, [0.0]*len(properties['A'])))
-  mtx = numpy.concatenate((numpy.array(pssm), numpy.array(propencoding)), axis=1)
+  mtx = numpy.concatenate((pssm, numpy.array(propencoding)), axis=1)
   mtx = mtx.reshape((1, mtx.shape[0], mtx.shape[1]))
   return acc, mtx
 
