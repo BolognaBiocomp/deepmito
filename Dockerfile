@@ -32,4 +32,4 @@ RUN conda update -n base conda && \
 # Verbosity level of Tensorflow
 ENV TF_CPP_MIN_LOG_LEVEL=3 DEEPMITO_ROOT=/usr/src/deepmito PATH=/usr/src/deepmito:$PATH
 
-ENTRYPOINT ["/usr/src/deepmito/deepmito.py"]
+ENTRYPOINT ["/usr/src/deepmito/deepmito-docker.py"]

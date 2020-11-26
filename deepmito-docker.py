@@ -25,13 +25,14 @@ def run_multifasta(ns):
   multiModel = MultiCNNWrapper(cfg.MODELS)
   annotation = {}
   try:
+    dbfile = os.path.join(dmcfg.DOCKER_PSIBLAST_DBDIR, os.path.basename(ns.dbfile))
     for record in SeqIO.parse(ns.fasta, 'fasta'):
       prefix = record.id.replace("|","_")
       fastaSeq  = workEnv.createFile(prefix+".", ".fasta")
       printDate("Processing sequence %s" % record.id)
       SeqIO.write([record], fastaSeq, 'fasta')
       printDate("Running PSIBLAST")
-      pssmFile, _ = runPsiBlast(prefix, ns.dbfile, fastaSeq, workEnv)
+      pssmFile, _ = runPsiBlast(prefix, dbfile, fastaSeq, workEnv)
       printDate("Predicting sumbitochondrial localization")
       acc, X = encode(fastaSeq, cfg.AAIDX10, pssmFile)
       pred   = multiModel.predict(X)
