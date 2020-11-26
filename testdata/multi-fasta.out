@@ -1,0 +1,4 @@
+##gff-version 3
+Q9UGM6	DeepMito	Mitochondrion inner membrane	1	360	0.19	.	.	Ontology_term:GO:0005743;evidence=ECO:0000256
+Q9UDX5	DeepMito	Mitochondrion outer membrane	1	166	0.49	.	.	Ontology_term:GO:0005741;evidence=ECO:0000256
+Q9NX14	DeepMito	Mitochondrion inner membrane	1	153	0.69	.	.	Ontology_term:GO:0005743;evidence=ECO:0000256

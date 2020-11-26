@@ -1,6 +1,6 @@
 import os
 
-DEEPMITOROOT=os.environ['DEEPMITOROOT']
+DEEPMITOROOT=os.environ['DEEPMITO_ROOT']
 
 MODELS=[os.path.join(DEEPMITOROOT, "models", "model.0.no-opt.h5"),
         os.path.join(DEEPMITOROOT, "models", "model.1.no-opt.h5"),
@@ -57,3 +57,10 @@ GOINFO        = {"GO:0005741": {"uniprot": {"location": {"value": "Mitochondrion
                                "GO": {"type": "GO", "id": "GO:0005759",
                                       "properties": {"term": "C:mitochondrial matrix"},
                                       "evidences": [{"code": "ECO:0000256|SAM:DeepMito"}]}}}
+
+locmap = {0: ("Mitochondrion outer membrane", "GO:0005741"),
+          1: ("Mitochondrion inner membrane", "GO:0005743"),
+          2: ("Mitochondrion intermembrane space", "GO:0005758"),
+          3: ("Mitochondrion matrix", "GO:0005759")}
+
+DOCKER_PSIBLAST_DBDIR = "/seqdb"

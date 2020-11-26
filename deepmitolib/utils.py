@@ -1,5 +1,6 @@
 import numpy
 from Bio import SeqIO
+import logging
 
 from time import localtime, strftime
 
@@ -63,7 +64,7 @@ def _pssmParseNew(checkpoint, transform):
             else:
                 pos[j] = float(line[j])
         pssm.append(pos)
-    return pssm
+    return numpy.array(pssm)
 
 def readfasta(fastafile):
   record = next(SeqIO.parse(fastafile, "fasta"))
@@ -91,6 +92,31 @@ def encode(fasta, properties, blastpssm):
   propencoding = []
   for aa in sequence:
     propencoding.append(properties.get(aa, [0.0]*len(properties['A'])))
-  mtx = numpy.concatenate((numpy.array(pssm), numpy.array(propencoding)), axis=1)
+  mtx = numpy.concatenate((pssm, numpy.array(propencoding)), axis=1)
   mtx = mtx.reshape((1, mtx.shape[0], mtx.shape[1]))
   return acc, mtx
+
+def check_sequence_pssm_match(sequence, psiblast_pssm):
+    try:
+        pssm_mat = BlastCheckPointPSSM(psiblast_pssm)
+    except:
+        logging.error("Failed reading/parsing PSSM file")
+        raise
+    else:
+        try:
+            assert(len(sequence) == pssm_mat.shape[0])
+        except:
+            logging.error("Sequence and PSSM have different lengths")
+            raise
+
+    return True
+
+def write_gff_output(annotation, output_file):
+    print("##gff-version 3", file = output_file)
+    for acc in annotation:
+        sequence = annotation[acc]['sequence']
+        score = annotation[acc]['score']
+        c = dmcfg.locmap[annotation[acc]['loc']]
+        l = len(sequence)
+        print(acc, "DeepMito", c[0], 1, l, score, ".", ".",
+        "Ontology_term:%s;evidence=ECO:0000256" % c[1], file = output_file, sep = "\t")
