@@ -1,15 +1,22 @@
 #!/usr/bin/env python
 import sys
+import logging
 import os
-sys.path.append(os.environ['DEEPMITO_ROOT'])
+if 'DEEPMITO_ROOT' in os.environ:
+    sys.path.append(os.environ['DEEPMITO_ROOT'])
+else:
+    logging.error("DEEPMITO_ROOT environment varible is not set")
+    logging.error("Please, set and export DEEPMITO_ROOT to point to deepmito root folder")
+    sys.exit(1)
+
 import argparse
 import numpy
-import logging
+
 from Bio import SeqIO
 
 import deepmitolib.deepmitoconfig as cfg
 from deepmitolib.cnn import MultiCNNWrapper
-from deepmitolib.utils import encode, annotToText, check_sequence_pssm_match
+from deepmitolib.utils import encode, annotToText, check_sequence_pssm_match, printDate, write_gff_output
 from deepmitolib.workenv import TemporaryEnv
 from deepmitolib.blast import runPsiBlast
 
@@ -19,17 +26,22 @@ def run_multifasta(ns):
   annotation = {}
   try:
     for record in SeqIO.parse(ns.fasta, 'fasta'):
-      record.id = record.id.replace("|","_")
-      fastaSeq  = workEnv.createFile(record.id+".", ".fasta")
+      prefix = record.id.replace("|","_")
+      fastaSeq  = workEnv.createFile(prefix+".", ".fasta")
+      printDate("Processing sequence %s" % record.id)
       SeqIO.write([record], fastaSeq, 'fasta')
-      pssmFile, _ = runPsiBlast(record.id, ns.dbfile, fastaSeq, workEnv)
+      printDate("Running PSIBLAST")
+      pssmFile, _ = runPsiBlast(prefix, ns.dbfile, fastaSeq, workEnv)
+      printDate("Predicting sumbitochondrial localization")
       acc, X = encode(fastaSeq, cfg.AAIDX10, pssmFile)
       pred   = multiModel.predict(X)
-      cc = cfg.GOMAP[numpy.argmax(pred)]
+      cc = numpy.argmax(pred)
       score = round(numpy.max(pred),2)
-      annotation[record.id] = {'sequence': {'len': len(str(record.seq)), 'sequence': str(record.seq)},
-                                   'goa': [cc], 'features': [], 'score': score, 'second': '-', 'alt_score': 0.0}
-    annotToText(annotation, ns.outf)
+      annotation[record.id] = {'sequence': str(record.seq), 'loc': cc, 'score': score}
+    #annotToText(annotation, ns.outf)
+    ofs = open(ns.outf, 'w')
+    write_gff_output(annotation, ofs)
+    ofs.close()
   except:
     logging.exception("Errors occurred:")
     sys.exit(1)
@@ -47,6 +59,8 @@ def run_pssm(ns):
     logging.exception("Error reading FASTA: file is not FASTA or more than one sequence is present")
     sys.exit(1)
   else:
+    printDate("Processing sequence %s" % record.id)
+    printDate("Using user-provided PSSM file, skipping PSIBLAST")
     pssmFile = ns.psiblast_pssm
     try:
       check_sequence_pssm_match(str(record.seq), pssmFile)
@@ -55,16 +69,18 @@ def run_pssm(ns):
       sys.exit(1)
     else:
       try:
-        record.id = record.id.replace("|","_")
-        fastaSeq  = workEnv.createFile(record.id+".", ".fasta")
+        prefix = record.id.replace("|","_")
+        fastaSeq  = workEnv.createFile(prefix+".", ".fasta")
         SeqIO.write([record], fastaSeq, 'fasta')
+        printDate("Predicting sumbitochondrial localization")
         acc, X = encode(fastaSeq, cfg.AAIDX10, pssmFile)
         pred   = multiModel.predict(X)
-        cc = cfg.GOMAP[numpy.argmax(pred)]
+        cc = numpy.argmax(pred)
         score = round(numpy.max(pred),2)
-        annotation[record.id] = {'sequence': {'len': len(str(record.seq)), 'sequence': str(record.seq)},
-                                   'goa': [cc], 'features': [], 'score': score, 'second': '-', 'alt_score': 0.0}
-        annotToText(annotation, ns.outf)
+        annotation[record.id] = {'sequence': str(record.seq), 'loc': cc, 'score': score}
+        ofs = open(ns.outf, 'w')
+        write_gff_output(annotation, ofs)
+        ofs.close()
       except:
         logging.exception("Errors occurred:")
         sys.exit(1)

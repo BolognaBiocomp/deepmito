@@ -110,3 +110,13 @@ def check_sequence_pssm_match(sequence, psiblast_pssm):
             raise
 
     return True
+
+def write_gff_output(annotation, output_file):
+    print("##gff-version 3", file = output_file)
+    for acc in annotation:
+        sequence = annotation[acc]['sequence']
+        score = annotation[acc]['score']
+        c = dmcfg.locmap[annotation[acc]['loc']]
+        l = len(sequence)
+        print(acc, "DeepMito", c[0], 1, l, score, ".", ".",
+        "Ontology_term:%s;evidence=ECO:0000256" % c[1], file = output_file, sep = "\t")

@@ -19,7 +19,6 @@ def runPsiBlast(acc, dbfile, fastaFile, workEnv):
   sequence = "".join([x.strip() for x in open(fastaFile).readlines()[1:]])
   if not check_db_index(dbfile):
       makeblastdb(dbfile)
-  utils.printDate("%s: Running PsiBlast" % acc)
   subprocess.call(['psiblast', '-query', fastaFile,
                    '-db', dbfile,
                    '-out', psiblastOutAln,
@@ -31,5 +30,4 @@ def runPsiBlast(acc, dbfile, fastaFile, workEnv):
   return psiblastOutPssm, psiblastOutAln
 
 def makeblastdb(dbfile):
-  utils.printDate("Preparing sequence database")
   subprocess.call(['makeblastdb', '-in', dbfile, '-dbtype', 'prot'])
