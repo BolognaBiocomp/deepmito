@@ -62,5 +62,4 @@ locmap = {0: ("Mitochondrion outer membrane", "GO:0005741"),
           1: ("Mitochondrion inner membrane", "GO:0005743"),
           2: ("Mitochondrion intermembrane space", "GO:0005758"),
           3: ("Mitochondrion matrix", "GO:0005759")}
-
-DOCKER_PSIBLAST_DBDIR = "/seqdb"
+          
