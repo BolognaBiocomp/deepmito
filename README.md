@@ -83,7 +83,7 @@ $ gunzip uniprot_sprot.fasta.gz
 Now, we are ready to predict the sub-mitochondrial localization of our input protein. Run:
 
 ```
-$ docker run -v $(pwd):/data/ -v $(pwd):/seqdb/ bolognabiocomp/deepmito -f Q9NX14.fasta -d uniprot_sprot.fasta -o Q9NX14.out
+$ docker run -v $(pwd):/data/ bolognabiocomp/deepmito -f Q9NX14.fasta -d uniprot_sprot.fasta -o Q9NX14.out
 ```
 
 In the example above, we are mapping the current program working directory ($(pwd)) to the /data/ folder inside the container. This will allow the container to see the external FASTA file Q9NX14.fasta and the database file uniprot_sprot.fasta.
@@ -111,6 +111,8 @@ Columns are as follows:
 The show the DeepMito help in pssm mode run:
 
 ```
+$ docker run bolognabiocomp/deepmito pssm -h
+
 usage: deepmito.py pssm [-h] -f FASTA -p PSIBLAST_PSSM -o OUTF
 
 DeepMito: PSSM input module.
