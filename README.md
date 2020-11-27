@@ -85,18 +85,10 @@ Now, we are ready to predict the sub-mitochondrial localization of our input pro
 ```
 $ docker run -v $(pwd):/data/ -v $(pwd):/seqdb/ bolognabiocomp/deepmito -f Q9NX14.fasta -d uniprot_sprot.fasta -o Q9NX14.out
 ```
-In the example above, we are mapping the current program working directory ($(pwd)) to two folders inside the container:
-- the /data/ folder, where the container expects the input FASTA file;
-- the /seqdb/ folder, where the container expects the sequence database for profile generation.
 
-In this particular example, both the input FASTA file (i.e. Q9NX14.fasta) and the sequence database (i.e. uniprot_sprot.fasta) are placed in the same directory, actually the current working directory. In general, this two files can be anywhere in your machine. For instance, suppose the sequence database is stored in /databases/UniProt/uniprot_sprot.fasta, while the input sequence is still in the current directory. In this case, you will run:
+In the example above, we are mapping the current program working directory ($(pwd)) to the /data/ folder inside the container. This will allow the container to see the external FASTA file Q9NX14.fasta and the database file uniprot_sprot.fasta.
 
-```
-$ docker run -v $(pwd):/data/ -v /databases/UniProt:/seqdb/ bolognabiocomp/deepmito -f Q9NX14.fasta -o Q9NX14.out -d uniprot_sprot.fasta
-```
-As you can see, in this case the /databases/UniProt (where the db file is actually placed in you machine) is mount to /seqdb inside the container. The current working directory is instead mapped to /data/ in the container (as before). In this way, we can specify input and database files that are placed in different locations in the local filesystem.
-
-In any case, after running DeepMito, a database index is generated (using makeblastdb) for the input database, if not present.
+After running DeepMito, a database index is generated (using makeblastdb) for the input database, if not present.
 The file Q9NX14.out now contains the DeepMito prediction in GFF3 format:
 
 ```
