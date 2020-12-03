@@ -119,4 +119,4 @@ def write_gff_output(annotation, output_file):
         c = dmcfg.locmap[annotation[acc]['loc']]
         l = len(sequence)
         print(acc, "DeepMito", c[0], 1, l, score, ".", ".",
-        "Ontology_term:%s;evidence=ECO:0000256" % c[1], file = output_file, sep = "\t")
+        "Ontology_term=%s;evidence=ECO:0000256" % c[1], file = output_file, sep = "\t")
