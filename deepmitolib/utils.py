@@ -6,6 +6,7 @@ from time import localtime, strftime
 
 from . import deepmitoconfig as dmcfg
 import copy
+import json
 
 def annotToText(annotation, outfile):
   ofs = open(outfile, 'w')
@@ -120,3 +121,56 @@ def write_gff_output(annotation, output_file):
         l = len(sequence)
         print(acc, "DeepMito", c[0], 1, l, score, ".", ".",
         "Ontology_term=%s;evidence=ECO:0000256" % c[1], file = output_file, sep = "\t")
+
+def write_json_output(annotation, output_file):
+    protein_jsons = []
+    for acc in annotation:
+        sequence = annotation[acc]['sequence']
+        c = dmcfg.locmap[annotation[acc]['loc']]
+        go_info = dmcfg.GOINFO[c[1]]
+
+        acc_json = {'accession': acc, 'dbReferences': [], 'comments': []}
+        acc_json['sequence'] = {
+                                  "length": len(sequence),
+                                  "sequence": sequence
+                               }
+        acc_json['dbReferences'].append({
+            "id": c[1],
+            "type": "GO",
+            "properties": {
+              "term": go_info['GO']['properties']['term'],
+              "source": "IEA:DeepMito"
+            },
+            "evidences": [
+              {
+                "code": "ECO:0000256",
+                "source": {
+                  "name": "SAM",
+                  "id": "DeepMito",
+                  "url": "https://busca.biocomp.unibo.it/deepmito",
+                }
+              }
+            ]
+        })
+        acc_json['comments'].append({
+            "type": "SUBCELLULAR_LOCATION",
+            "locations": [
+              {
+                "location": {
+                  "value": go_info["uniprot"]["location"]["value"],
+                  "evidences": [
+                    {
+                      "code": "ECO:0000256",
+                      "source": {
+                        "name": "SAM",
+                        "id": "DeepMito",
+                        "url": "https://busca.biocomp.unibo.it/deepmito",
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+        })
+        protein_jsons.append(acc_json)
+    json.dump(protein_jsons, output_file, indent=5)

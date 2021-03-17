@@ -16,7 +16,7 @@ from Bio import SeqIO
 
 import deepmitolib.deepmitoconfig as cfg
 from deepmitolib.cnn import MultiCNNWrapper
-from deepmitolib.utils import encode, annotToText, check_sequence_pssm_match, printDate, write_gff_output
+from deepmitolib.utils import encode, annotToText, check_sequence_pssm_match, printDate, write_gff_output, write_json_output
 from deepmitolib.workenv import TemporaryEnv
 from deepmitolib.blast import runPsiBlast
 
@@ -40,7 +40,10 @@ def run_multifasta(ns):
       annotation[record.id] = {'sequence': str(record.seq), 'loc': cc, 'score': score}
     #annotToText(annotation, ns.outf)
     ofs = open(ns.outf, 'w')
-    write_gff_output(annotation, ofs)
+    if ns.outfmt == "gff3":
+        write_gff_output(annotation, ofs)
+    else:
+        write_json_output(annotation, ofs)
     ofs.close()
   except:
     logging.exception("Errors occurred:")
@@ -79,7 +82,10 @@ def run_pssm(ns):
         score = round(numpy.max(pred),2)
         annotation[record.id] = {'sequence': str(record.seq), 'loc': cc, 'score': score}
         ofs = open(ns.outf, 'w')
-        write_gff_output(annotation, ofs)
+        if ns.outfmt == "gff3":
+            write_gff_output(annotation, ofs)
+        else:
+            write_json_output(annotation, ofs)
         ofs.close()
       except:
         logging.exception("Errors occurred:")
@@ -108,8 +114,11 @@ def main():
                             help = "The PSIBLAST DB file",
                             dest = "dbfile", required= True)
   multifasta.add_argument("-o", "--outf",
-                        help = "The output GFF3 file",
+                        help = "The output file",
                         dest = "outf", required = True)
+  multifasta.add_argument("-m", "--outfmt",
+                        help = "The output format: json or gff3 (default)",
+                        choices=['json', 'gff3'], required = False, default = "gff3")
   multifasta.set_defaults(func=run_multifasta)
 
   pssm.add_argument("-f", "--fasta",
@@ -119,8 +128,11 @@ def main():
                         help = "The PSIBLAST PSSM file",
                         dest = "psiblast_pssm", required= True)
   pssm.add_argument("-o", "--outf",
-                        help = "The output GFF3 file",
+                        help = "The output file",
                         dest = "outf", required = True)
+  pssm.add_argument("-m", "--outfmt",
+                    help = "The output format: json or gff3 (default)",
+                    choices=['json', 'gff3'], required = False, default = "gff3")
   pssm.set_defaults(func=run_pssm)
   if len(sys.argv) == 1:
     parser.print_help()
