@@ -139,7 +139,8 @@ def write_json_output(annotation, output_file):
             "type": "GO",
             "properties": {
               "term": go_info['GO']['properties']['term'],
-              "source": "IEA:DeepMito"
+              "source": "IEA:DeepMito",
+              "score": round(float(annotation[acc]['score']),2)
             },
             "evidences": [
               {
@@ -158,6 +159,7 @@ def write_json_output(annotation, output_file):
               {
                 "location": {
                   "value": go_info["uniprot"]["location"]["value"],
+                  "score": "score": round(float(annotation[acc]['score']),2),
                   "evidences": [
                     {
                       "code": "ECO:0000256",
