@@ -9,7 +9,7 @@ def check_db_index(dbfile):
           return False
   return True
 
-def runPsiBlast(acc, dbfile, fastaFile, workEnv):
+def runPsiBlast(acc, dbfile, fastaFile, workEnv, data_cache=None):
   psiblastStdOut   = workEnv.createFile(acc+".psiblast_stdout.", ".log")
   psiblastStdErr   = workEnv.createFile(acc+".psiblast_stderr.", ".log")
   psiblastOutPssm  = workEnv.createFile(acc+".psiblast.", ".pssm")
@@ -17,17 +17,25 @@ def runPsiBlast(acc, dbfile, fastaFile, workEnv):
   psial2HSSPStdErr = workEnv.createFile(acc+".psial_stderr.", ".log")
 
   sequence = "".join([x.strip() for x in open(fastaFile).readlines()[1:]])
-  if not check_db_index(dbfile):
+  exec_blast = True
+  if data_cache is not None:
+    if data_cache.lookup(sequence, "psiblast.pssm"):
+      exec_blast = False
+  if exec_blast:
+    if not check_db_index(dbfile):
       makeblastdb(dbfile)
-  subprocess.call(['psiblast', '-query', fastaFile,
-                   '-db', dbfile,
-                   '-out', psiblastOutAln,
-                   '-out_ascii_pssm', psiblastOutPssm,
-                   '-num_iterations', '3',
-                   '-evalue', '1e-3'],
-                   stdout=open(psiblastStdOut, 'w'),
-                   stderr=open(psiblastStdErr, 'w'))
-  return psiblastOutPssm, psiblastOutAln
+    subprocess.call(['psiblast', '-query', fastaFile,
+                     '-db', dbfile,
+                     '-out', psiblastOutAln,
+                     '-out_ascii_pssm', psiblastOutPssm,
+                     '-num_iterations', '3',
+                     '-evalue', '1e-3'],
+                     stdout=open(psiblastStdOut, 'w'),
+                     stderr=open(psiblastStdErr, 'w'))
+    data_cache.store(psiblastOutPssm, sequence, 'psiblast.pssm')
+  else:
+    data_cache.retrieve(sequence, '', psiblastOutPssm)
+  return psiblastOutPssm
 
 def makeblastdb(dbfile):
   subprocess.call(['makeblastdb', '-in', dbfile, '-dbtype', 'prot'])
