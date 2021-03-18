@@ -32,7 +32,8 @@ def runPsiBlast(acc, dbfile, fastaFile, workEnv, data_cache=None):
                      '-evalue', '1e-3'],
                      stdout=open(psiblastStdOut, 'w'),
                      stderr=open(psiblastStdErr, 'w'))
-    data_cache.store(psiblastOutPssm, sequence, 'psiblast.pssm')
+    if data_cache is not None:
+      data_cache.store(psiblastOutPssm, sequence, 'psiblast.pssm')
   else:
     data_cache.retrieve(sequence, 'psiblast.pssm', psiblastOutPssm)
   return psiblastOutPssm
