@@ -16,7 +16,7 @@ from Bio import SeqIO
 
 import deepmitolib.deepmitoconfig as cfg
 from deepmitolib.cnn import MultiCNNWrapper
-from deepmitolib.utils import encode, annotToText, check_sequence_pssm_match, printDate, write_gff_output, write_json_output
+from deepmitolib.utils import encode, annotToText, check_sequence_pssm_match, printDate, write_gff_output, write_json_output, get_data_cache
 from deepmitolib.workenv import TemporaryEnv
 from deepmitolib.blast import runPsiBlast
 
@@ -24,6 +24,7 @@ def run_multifasta(ns):
   workEnv = TemporaryEnv()
   multiModel = MultiCNNWrapper(cfg.MODELS)
   annotation = {}
+  data_cache = get_data_cache(ns.cache_dir)
   try:
     for record in SeqIO.parse(ns.fasta, 'fasta'):
       prefix = record.id.replace("|","_")
@@ -31,7 +32,7 @@ def run_multifasta(ns):
       printDate("Processing sequence %s" % record.id)
       SeqIO.write([record], fastaSeq, 'fasta')
       printDate("Running PSIBLAST")
-      pssmFile, _ = runPsiBlast(prefix, ns.dbfile, fastaSeq, workEnv)
+      pssmFile = runPsiBlast(prefix, ns.dbfile, fastaSeq, workEnv, data_cache=data_cache)
       printDate("Predicting sumbitochondrial localization")
       acc, X = encode(fastaSeq, cfg.AAIDX10, pssmFile)
       pred   = multiModel.predict(X)
@@ -119,6 +120,7 @@ def main():
   multifasta.add_argument("-m", "--outfmt",
                         help = "The output format: json or gff3 (default)",
                         choices=['json', 'gff3'], required = False, default = "gff3")
+  multifasta.add_argument("-c", "--cache-dir", help="Cache dir for alignemnts", dest="cache_dir", required=False, default=None)
   multifasta.set_defaults(func=run_multifasta)
 
   pssm.add_argument("-f", "--fasta",

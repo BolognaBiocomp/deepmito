@@ -112,6 +112,15 @@ def check_sequence_pssm_match(sequence, psiblast_pssm):
 
     return True
 
+def get_data_cache(cache_dir):
+    import os
+    from . import datacache
+    ret = None
+    if cache_dir is not None:
+        if os.path.isdir(cache_dir):
+            ret = datacache.DataCache(cache_dir)
+    return ret
+
 def write_gff_output(annotation, output_file):
     print("##gff-version 3", file = output_file)
     for acc in annotation:
@@ -159,7 +168,7 @@ def write_json_output(annotation, output_file):
               {
                 "location": {
                   "value": go_info["uniprot"]["location"]["value"],
-                  "score": "score": round(float(annotation[acc]['score']),2),
+                  "score": round(float(annotation[acc]['score']),2),
                   "evidences": [
                     {
                       "code": "ECO:0000256",
