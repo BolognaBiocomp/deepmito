@@ -33,7 +33,7 @@ def run_multifasta(ns):
       SeqIO.write([record], fastaSeq, 'fasta')
       printDate("Running PSIBLAST")
       pssmFile = runPsiBlast(prefix, ns.dbfile, fastaSeq, workEnv, data_cache=data_cache,
-                             num_alignments=ns.pdnalign, num_iterations=ns.pbniter, evalue=ns.pbeval)
+                             num_alignments=ns.pbnalign, num_iterations=ns.pbniter, evalue=ns.pbeval)
       printDate("Predicting sumbitochondrial localization")
       acc, X = encode(fastaSeq, cfg.AAIDX10, pssmFile)
       pred   = multiModel.predict(X)
