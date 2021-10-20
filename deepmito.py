@@ -32,7 +32,8 @@ def run_multifasta(ns):
       printDate("Processing sequence %s" % record.id)
       SeqIO.write([record], fastaSeq, 'fasta')
       printDate("Running PSIBLAST")
-      pssmFile = runPsiBlast(prefix, ns.dbfile, fastaSeq, workEnv, data_cache=data_cache)
+      pssmFile = runPsiBlast(prefix, ns.dbfile, fastaSeq, workEnv, data_cache=data_cache,
+                             num_alignments=ns.pdnalign, num_iterations=ns.pbniter, evalue=ns.pbeval)
       printDate("Predicting sumbitochondrial localization")
       acc, X = encode(fastaSeq, cfg.AAIDX10, pssmFile)
       pred   = multiModel.predict(X)
@@ -120,6 +121,9 @@ def main():
                         help = "The output format: json or gff3 (default)",
                         choices=['json', 'gff3'], required = False, default = "gff3")
   multifasta.add_argument("-c", "--cache-dir", help="Cache dir for alignemnts", dest="cache_dir", required=False, default=None)
+  multifasta.add_argument("-j", "--psiblast-iter", help="Number of PSIBLAST iterations (default 3)", dest="pbniter", required=False, default=3, type=int)
+  multifasta.add_argument("-n", "--psiblast-nalign", help="PSIBLAST num_alignments parameter (default 5000)", dest="pbnalign", required=False, default=5000, type=int)
+  multifasta.add_argument("-e", "--psiblast-evalue", help="PSIBLAST evalue parameter (default 0.001)", dest="pbeval", required=False, default=0.001, type=float)
   multifasta.set_defaults(func=run_multifasta)
 
   pssm.add_argument("-f", "--fasta",
