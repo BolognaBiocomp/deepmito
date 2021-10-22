@@ -10,7 +10,8 @@ def check_db_index(dbfile):
   return True
 
 def runPsiBlast(acc, dbfile, fastaFile, workEnv, data_cache=None,
-                num_iterations=3, num_alignments=5000, evalue=0.001):
+                num_iterations=3, num_alignments=5000, evalue=0.001,
+                threads=1):
   psiblastStdOut   = workEnv.createFile(acc+".psiblast_stdout.", ".log")
   psiblastStdErr   = workEnv.createFile(acc+".psiblast_stderr.", ".log")
   psiblastOutPssm  = workEnv.createFile(acc+".psiblast.", ".pssm")
@@ -31,7 +32,8 @@ def runPsiBlast(acc, dbfile, fastaFile, workEnv, data_cache=None,
                      '-out_ascii_pssm', psiblastOutPssm,
                      '-num_iterations', str(num_iterations),
                      '-evalue', str(evalue),
-                     '-num_alignments', str(num_alignments)],
+                     '-num_alignments', str(num_alignments),
+                     '-num_threads', str(threads)],
                      stdout=open(psiblastStdOut, 'w'),
                      stderr=open(psiblastStdErr, 'w'))
     if data_cache is not None:
