@@ -21,12 +21,12 @@ from deepmitolib.workenv import TemporaryEnv
 from deepmitolib.blast import runPsiBlast
 
 def run_multifasta(ns):
-  workEnv = TemporaryEnv()
   multiModel = MultiCNNWrapper(cfg.MODELS)
   annotation = {}
   data_cache = get_data_cache(ns.cache_dir)
   try:
     for record in SeqIO.parse(ns.fasta, 'fasta'):
+      workEnv = TemporaryEnv()
       prefix = record.id.replace("|","_")
       fastaSeq  = workEnv.createFile(prefix+".", ".fasta")
       printDate("Processing sequence %s" % record.id)
@@ -40,6 +40,7 @@ def run_multifasta(ns):
       cc = numpy.argmax(pred)
       score = round(numpy.max(pred),2)
       annotation[record.id] = {'sequence': str(record.seq), 'loc': cc, 'score': score}
+      workEnv.destroy()
     #annotToText(annotation, ns.outf)
     ofs = open(ns.outf, 'w')
     if ns.outfmt == "gff3":
@@ -51,7 +52,6 @@ def run_multifasta(ns):
     logging.exception("Errors occurred:")
     sys.exit(1)
   else:
-    workEnv.destroy()
     sys.exit(0)
 
 def run_pssm(ns):
